@@ -14,4 +14,4 @@ class User(Base):
     email = Column(String(255), nullable = False)
     password = Column(String(255), nullable = False)
     created_at = Column(TIMESTAMP, nullable = False)
-    role = Column(enum(Role), nullable = False)
+    role = Column(Enum(Role), nullable = False)
