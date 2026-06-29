@@ -1,6 +1,6 @@
 from sqlalchemy import Integer, String, TIMESTAMP,Column, Enum
 import enum
-from database import Base
+from app.core.database import Base
 
 class Role(enum.Enum):
     admin = "admin"

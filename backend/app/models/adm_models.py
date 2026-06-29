@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, ForeignKey
-from database import Base
+from app.core.database import Base
 
 class Adm(Base):
     __tablename__ = "adm"
