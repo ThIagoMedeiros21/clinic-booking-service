@@ -1,8 +1,8 @@
 """create tables
 
-Revision ID: 044fa1d92c76
+Revision ID: 8c963a2b49e1
 Revises: 
-Create Date: 2026-06-29 00:01:17.440599
+Create Date: 2026-06-29 00:53:43.800512
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '044fa1d92c76'
+revision: str = '8c963a2b49e1'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -25,15 +25,15 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('name', sa.String(length=50), nullable=False),
     sa.Column('address', sa.String(length=255), nullable=False),
-    sa.Column('phone', sa.String(length=14), nullable=False),
-    sa.Column('created_at', sa.TIMESTAMP(), nullable=False),
+    sa.Column('phone', sa.String(length=30), nullable=False),
+    sa.Column('created_at', sa.TIMESTAMP(), server_default=sa.text('now()'), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('user',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('email', sa.String(length=255), nullable=False),
     sa.Column('password', sa.String(length=255), nullable=False),
-    sa.Column('created_at', sa.TIMESTAMP(), nullable=False),
+    sa.Column('created_at', sa.TIMESTAMP(), server_default=sa.text('now()'), nullable=False),
     sa.Column('role', sa.Enum('admin', 'medic', 'patient', name='role'), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
@@ -69,7 +69,7 @@ def upgrade() -> None:
     sa.Column('clinic_id', sa.Integer(), nullable=False),
     sa.Column('start_time', sa.TIMESTAMP(), nullable=False),
     sa.Column('end_time', sa.TIMESTAMP(), nullable=False),
-    sa.Column('status', sa.String(), nullable=False),
+    sa.Column('status', sa.Enum('pending', 'confirmed', 'cancelled', name='appointmentstatus'), nullable=False),
     sa.ForeignKeyConstraint(['clinic_id'], ['clinic.id'], ),
     sa.ForeignKeyConstraint(['medic_id'], ['medic.id'], ),
     sa.ForeignKeyConstraint(['patient_id'], ['patient.id'], ),
@@ -81,7 +81,8 @@ def upgrade() -> None:
     sa.Column('clinic_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['clinic_id'], ['clinic.id'], ),
     sa.ForeignKeyConstraint(['medic_id'], ['medic.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('medic_id', 'clinic_id')
     )
     # ### end Alembic commands ###
 
